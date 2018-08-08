@@ -1,13 +1,13 @@
 // Set env var so I get all the goodies
 process.env.DEBUG = '*'
 process.env.DEBUG_COLORS = 'true'
-process.env.PROVIDER = "https://ropsten.infura.io/bXIbx0x6ofEuDANTSeKI"
+process.env.PROVIDER = "https://kovan.infura.io/bXIbx0x6ofEuDANTSeKI"
 process.env.MNEMONIC = 'toward explain key rough web lend movie critic flee circle clock gas'
 
 const Machinomy = require('machinomy').default
 const BigNumber = require('bignumber.js')
 const Web3 = require('web3')
-const HDWalletProvider = require('truffle-hdwallet-provider')
+const HDWalletProvider = require('@machinomy/hdwallet-provider').default
 const trash = require('trash')
 const path = require('path')
 
@@ -21,9 +21,9 @@ async function run () {
   const receiverProvider = new HDWalletProvider(
     process.env.MNEMONIC,
     process.env.PROVIDER,
-    1
+    2
   )
-  const receiverAccount = receiverProvider.getAddress(0)
+  const receiverAccount = await receiverProvider.getAddress(1)
   console.log(receiverAccount)
   const receiverWeb3 = new Web3(receiverProvider)
   const receiverMachinomy = new Machinomy(
@@ -37,6 +37,8 @@ async function run () {
   await receiverMachinomy.acceptPayment({
     payment: oldPayment
   })
+
+  await receiverMachinomy.close(oldPayment.channelId)
 }
 
 run().catch(err => {

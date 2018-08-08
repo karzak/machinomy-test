@@ -1,13 +1,13 @@
 // Set env var so I get all the goodies
 process.env.DEBUG = '*'
 process.env.DEBUG_COLORS = 'true'
-process.env.PROVIDER = "https://ropsten.infura.io/bXIbx0x6ofEuDANTSeKI"
+process.env.PROVIDER = "https://kovan.infura.io/bXIbx0x6ofEuDANTSeKI"
 process.env.MNEMONIC = 'toward explain key rough web lend movie critic flee circle clock gas'
 
 const Machinomy = require('machinomy').default
 const BigNumber = require('bignumber.js')
 const Web3 = require('web3')
-const HDWalletProvider = require('truffle-hdwallet-provider')
+const HDWalletProvider = require('@machinomy/hdwallet-provider').default
 const trash = require('trash')
 const path = require('path')
 const fs = require('fs')
@@ -20,10 +20,9 @@ async function run () {
   const senderProvider = new HDWalletProvider(
     process.env.MNEMONIC,
     process.env.PROVIDER,
-    0
+    2
   )
-  const account = senderProvider.getAddress(0)
-  console.log(account)
+  const account = await senderProvider.getAddress(0)
   const web3 = new Web3(senderProvider)
   const machinomy = new Machinomy(
     account,
@@ -37,11 +36,13 @@ async function run () {
   const receiverProvider = new HDWalletProvider(
     process.env.MNEMONIC,
     process.env.PROVIDER,
-    1
+    2
   )
-  const receiverAccount = receiverProvider.getAddress(0)
+  const receiverAccount = await receiverProvider.getAddress(1)
   console.log(web3.isAddress(receiverAccount))
   console.log(web3.isAddress(account))
+  console.log(account)
+  console.log(receiverAccount)
 
   // 1. Create a new channel to receiver
   await machinomy.open(
